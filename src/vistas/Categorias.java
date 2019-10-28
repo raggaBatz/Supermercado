@@ -34,7 +34,7 @@ public class Categorias extends javax.swing.JFrame {
         initComponents();
         
         textboxCategoria.setText("");
-        
+        //probando git
         //SE CREA MODELO PARA LA TABLA QUE SE MOSTRARA
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
