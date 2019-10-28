@@ -1,5 +1,4 @@
+5,Limpieza
+3,Basura
+2,Prensa
 1,Electronicos
-2,Belleza
-3,Perecederos
-4,Linea Blanca
-7,Chingon

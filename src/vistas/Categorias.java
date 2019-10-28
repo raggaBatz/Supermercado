@@ -11,21 +11,67 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import objetos.Categoria;
-
 /**
  *
  * @author GAMING
  */
 public class Categorias extends javax.swing.JFrame {
-    LinkedList<Categoria> object = new LinkedList<Categoria>(); 
+    
+    // SEGMENTO DE LISTA
+    class Categoria {
+        String id;
+        String descripcion;
+        Categoria sig;
+    }
+    
+    private Categoria raiz;
+     
+    public void insertar(String id, String categoria) {
+        Categoria nuevo;
+        nuevo = new Categoria();
+        nuevo.id = id;
+        nuevo.descripcion = categoria;
+        if (raiz==null)
+        {
+            nuevo.sig = null;
+            raiz = nuevo;
+        }
+        else
+        {
+            nuevo.sig = raiz;
+            raiz = nuevo;
+        }
+    }
+    
+    public void imprimir() {
+        Categoria reco=raiz;
+        System.out.println("Listado de todos los elementos de la pila.");
+        while (reco!=null) {
+            System.out.print(reco.descripcion+"-");
+            reco=reco.sig;
+        }
+        System.out.println();
+    }
+    
+    public int cantidad() {
+        int cant=0;
+        Categoria reco=raiz;
+        while (reco!=null) {
+            cant++;
+            reco=reco.sig;
+        }
+        return cant;
+    }
+    
+    //TERMINA SEGMENTO DE LISTA
+    
+    //LinkedList<Categoria> object = new LinkedList<Categoria>(); 
 
     /**
      * Creates new form Categorias
@@ -34,19 +80,17 @@ public class Categorias extends javax.swing.JFrame {
         initComponents();
         
         textboxCategoria.setText("");
-        //probando git
         //SE CREA MODELO PARA LA TABLA QUE SE MOSTRARA
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
         model.addColumn("Categoria");
-        JTable table = new JTable(model);
+        //JTable table = new JTable(model);
         
         
-        //CARGANDO ARCHIVO
-        cargarArchivo();
-      
-        
-        
+        //CARGANDO LISTA
+        cargar();
+        //LISTA
+        raiz=null; 
     }
 
     /**
@@ -172,15 +216,25 @@ public class Categorias extends javax.swing.JFrame {
     }//GEN-LAST:event_botonEliminarCategoriaActionPerformed
 
     private void sincronizar(){
+        DefaultTableModel model = (DefaultTableModel) this.tablaCategoria.getModel();           
+        raiz=null; 
+        for(int row = 0;row < model.getRowCount();row++) {
+            String id = (String)model.getValueAt(row,0);
+            String cat = (String)model.getValueAt(row,1);
+            insertar(id, cat);
+        }
+        sincronizarArchivo();
+    }
+    
+    private void sincronizarArchivo(){
         String path = new File("src/archivos/Categorias.txt").getAbsolutePath();
         File filedelete = new File(path);
         filedelete.delete();
         
         File file = new File(path);
 
-        //Write Content
         FileWriter writer = null;
-        DefaultTableModel model = (DefaultTableModel) this.tablaCategoria.getModel();
+        
         try {
             if (file.createNewFile())
             {
@@ -191,42 +245,45 @@ public class Categorias extends javax.swing.JFrame {
             
             writer = new FileWriter(file);
             
-            //int valor=0; 
-            for(int row = 0;row < model.getRowCount();row++) {
-                //for(int col = 0;col < dm2.getColumnCount();col++) {
-                        //valor = Integer.parseInt((String)model.getValueAt(row,0));
-                //}
-                String id = (String)model.getValueAt(row,0);
-                String cat = (String)model.getValueAt(row,1);
-                writer.write(id + "," + cat + System.getProperty( "line.separator" ));
+            Categoria reco=raiz;
+            while (reco!=null) {
+                writer.write(reco.id + "," + reco.descripcion + System.getProperty( "line.separator" ));
+                reco=reco.sig;
             }
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(Categorias.class.getName()).log(Level.SEVERE, null, ex);
         }
-        model.setRowCount(0);
+        cargar();
+    }
+    
+    private void cargar(){
         cargarArchivo();
+        DefaultTableModel model = (DefaultTableModel) this.tablaCategoria.getModel();
+        Categoria reco=raiz;
+        model.setRowCount(0);
+        while (reco!=null) {
+            DefaultTableModel modelotabla = (DefaultTableModel) tablaCategoria.getModel();
+            modelotabla.addRow(new Object[]{reco.id,reco.descripcion});
+            reco=reco.sig;
+        }
     }
     
     private void cargarArchivo(){
         String path = new File("src/archivos/Categorias.txt").getAbsolutePath();
         File file = new File(path);
-  
         BufferedReader br = null; 
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Categorias.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        raiz=null;
         String st; 
         try {
             while ((st = br.readLine()) != null){
-                
                 String[] fila = st.split(",");
-                
-                DefaultTableModel modelotabla = (DefaultTableModel) tablaCategoria.getModel();
-                modelotabla.addRow(new Object[]{fila[0],fila[1]});
+                insertar(fila[0], fila[1]);
             }
         } catch (IOException ex) {
             Logger.getLogger(Categorias.class.getName()).log(Level.SEVERE, null, ex);
@@ -239,7 +296,7 @@ public class Categorias extends javax.swing.JFrame {
         int valor=0; 
         for(int row = 0;row < model.getRowCount();row++) {
             //for(int col = 0;col < dm2.getColumnCount();col++) {
-                    valor = Integer.parseInt((String)model.getValueAt(row,0));
+            valor = Integer.parseInt((String)model.getValueAt(row,0));
             //}
         }
         valor++;
