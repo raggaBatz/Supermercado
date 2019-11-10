@@ -18,22 +18,24 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 
-public class Categorias extends javax.swing.JFrame {
+public class Pasillos extends javax.swing.JFrame {
     
     // SEGMENTO DE LISTA
-    class Categoria {
+    class Pasillo {
         String id;
         String descripcion;
-        Categoria sig;
+        String direccion;
+        Pasillo sig;
     }
     
-    private Categoria raiz;
+    private Pasillo raiz;
      
-    public void insertar(String id, String categoria) {
-        Categoria nuevo;
-        nuevo = new Categoria();
+    public void insertar(String id, String categoria,String direccion) {
+        Pasillo nuevo;
+        nuevo = new Pasillo();
         nuevo.id = id;
         nuevo.descripcion = categoria;
+        nuevo.direccion=direccion;
         if (raiz==null)
         {
             nuevo.sig = null;
@@ -47,7 +49,7 @@ public class Categorias extends javax.swing.JFrame {
     }
     
     public void imprimir() {
-        Categoria reco=raiz;
+        Pasillo reco=raiz;
         System.out.println("Listado de todos los elementos de la pila.");
         while (reco!=null) {
             System.out.print(reco.descripcion+"-");
@@ -58,7 +60,7 @@ public class Categorias extends javax.swing.JFrame {
     
     public int cantidad() {
         int cant=0;
-        Categoria reco=raiz;
+        Pasillo reco=raiz;
         while (reco!=null) {
             cant++;
             reco=reco.sig;
@@ -71,16 +73,17 @@ public class Categorias extends javax.swing.JFrame {
     //LinkedList<Categoria> object = new LinkedList<Categoria>(); 
 
     /**
-     * Creates new form Categorias
+     * Creates new form Bodegas
      */
-    public Categorias() throws IOException{
+    public Pasillos() throws IOException{
         initComponents();
-        
+        textboxDireccion.setText("");
         textboxCategoria.setText("");
         //SE CREA MODELO PARA LA TABLA QUE SE MOSTRARAmo
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
-        model.addColumn("Categoria");
+        model.addColumn("Nombre pasillo");
+         model.addColumn("Direccion");
         //JTable table = new JTable(model);
         
         
@@ -104,6 +107,9 @@ public class Categorias extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaCategoria = new javax.swing.JTable();
         botonEliminarCategoria = new javax.swing.JButton();
+        textboxDireccion = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -126,14 +132,14 @@ public class Categorias extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Categoria"
+                "ID", "Nombre pasillo", "Indicaciones "
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -148,6 +154,7 @@ public class Categorias extends javax.swing.JFrame {
         if (tablaCategoria.getColumnModel().getColumnCount() > 0) {
             tablaCategoria.getColumnModel().getColumn(0).setResizable(false);
             tablaCategoria.getColumnModel().getColumn(1).setResizable(false);
+            tablaCategoria.getColumnModel().getColumn(2).setResizable(false);
         }
 
         botonEliminarCategoria.setText("Eliminar");
@@ -157,6 +164,12 @@ public class Categorias extends javax.swing.JFrame {
             }
         });
 
+        textboxDireccion.setText("jTextField1");
+
+        jLabel1.setText("Nombre");
+
+        jLabel2.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,22 +177,34 @@ public class Categorias extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textboxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonAgregarCategoria)
-                    .addComponent(botonEliminarCategoria))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(botonAgregarCategoria)
+                                .addComponent(botonEliminarCategoria)
+                                .addComponent(textboxDireccion, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                .addComponent(textboxCategoria))
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
+                .addGap(26, 26, 26)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(textboxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel2)
+                        .addGap(4, 4, 4)
+                        .addComponent(textboxDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
                         .addComponent(botonAgregarCategoria)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(botonEliminarCategoria)))
@@ -194,8 +219,9 @@ public class Categorias extends javax.swing.JFrame {
     private void botonAgregarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarCategoriaActionPerformed
         // SE OBTIENE EL MODELO DE LA TABLA Y SE AGREGAN LOS VALORES A AGREGAR
         DefaultTableModel model = (DefaultTableModel) tablaCategoria.getModel();
-        model.addRow(new Object[]{generarID(),textboxCategoria.getText()});
+        model.addRow(new Object[]{generarID(),textboxCategoria.getText(),textboxDireccion.getText()});
         textboxCategoria.setText("");
+        textboxDireccion.setText("");
         sincronizar();
     }//GEN-LAST:event_botonAgregarCategoriaActionPerformed
 
@@ -218,13 +244,14 @@ public class Categorias extends javax.swing.JFrame {
         for(int row = 0;row < model.getRowCount();row++) {
             String id = (String)model.getValueAt(row,0);
             String cat = (String)model.getValueAt(row,1);
-            insertar(id, cat);
+            String dir = (String)model.getValueAt(row,2);
+            insertar(id, cat, dir);
         }
         sincronizarArchivo();
     }
     
     private void sincronizarArchivo(){
-        String path = new File("src/archivos/Categorias.txt").getAbsolutePath();
+        String path = new File("src/archivos/Pasillos.txt").getAbsolutePath();
         File filedelete = new File(path);
         filedelete.delete();
         
@@ -242,9 +269,9 @@ public class Categorias extends javax.swing.JFrame {
             
             writer = new FileWriter(file);
             
-            Categoria reco=raiz;
+            Pasillo reco=raiz;
             while (reco!=null) {
-                writer.write(reco.id + "," + reco.descripcion + System.getProperty( "line.separator" ));
+                writer.write(reco.id + "," + reco.descripcion +","+reco.direccion + System.getProperty( "line.separator" ));
                 reco=reco.sig;
             }
             writer.close();
@@ -257,17 +284,17 @@ public class Categorias extends javax.swing.JFrame {
     private void cargar(){
         cargarArchivo();
         DefaultTableModel model = (DefaultTableModel) this.tablaCategoria.getModel();
-        Categoria reco=raiz;
+        Pasillo reco=raiz;
         model.setRowCount(0);
         while (reco!=null) {
             DefaultTableModel modelotabla = (DefaultTableModel) tablaCategoria.getModel();
-            modelotabla.addRow(new Object[]{reco.id,reco.descripcion});
+            modelotabla.addRow(new Object[]{reco.id,reco.descripcion,reco.direccion});
             reco=reco.sig;
         }
     }
     
     private void cargarArchivo(){
-        String path = new File("src/archivos/Categorias.txt").getAbsolutePath();
+        String path = new File("src/archivos/Pasillos.txt").getAbsolutePath();
         File file = new File(path);
         BufferedReader br = null; 
         try {
@@ -280,7 +307,7 @@ public class Categorias extends javax.swing.JFrame {
         try {
             while ((st = br.readLine()) != null){
                 String[] fila = st.split(",");
-                insertar(fila[0], fila[1]);
+                insertar(fila[0], fila[1],fila[2]);
             }
         } catch (IOException ex) {
             Logger.getLogger(Categorias.class.getName()).log(Level.SEVERE, null, ex);
@@ -337,7 +364,7 @@ public class Categorias extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new Categorias().setVisible(true);
+                    new Bodegas().setVisible(true);
                 } catch (IOException ex) {
                     Logger.getLogger(Categorias.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -348,8 +375,11 @@ public class Categorias extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonAgregarCategoria;
     private javax.swing.JButton botonEliminarCategoria;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaCategoria;
     private javax.swing.JTextField textboxCategoria;
+    private javax.swing.JTextField textboxDireccion;
     // End of variables declaration//GEN-END:variables
 }
